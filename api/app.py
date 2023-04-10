@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, abort
 from pymongo import MongoClient
 from bson.objectid import ObjectId
+from bson import json_util
+import json
 from datetime import datetime
 from dotenv import dotenv_values
 env = dotenv_values(".env")
@@ -53,11 +55,20 @@ def registry():
     }
 
 
-@app.route("/saveFavorites", methods=["POST"])
+@app.route("/favorites", methods=["POST"])
 def saveFavorites():
     body_Favorites = request.json
-    print(body_Favorites)
+    print({"body_Favorites": body_Favorites})
     db.favorites.insert_one(body_Favorites)
     return {
         "success": True,
+    }
+
+
+@app.route("/favorites", methods=["GET"])
+def findFavorites():
+    favorites = db.favorites.find()
+    return {
+        "success": True,
+        "favorites": json.loads(json_util.dumps(favorites))
     }
