@@ -74,11 +74,11 @@ def findFavorites():
     }
 
 
-@app.route("/delete/favorites", methods=["POST"])
+@app.route("/favorites", methods=["DELETE"])
 def deleteFavorites():
-    favorites = db.favorites.find()
-    db.favorites.delete_one(favorites)
+    body_Favorites = request.json
+    db.favorites.delete_many(body_Favorites)
     return {
         "success": True,
-        "favorites": json.loads(json_util.dumps(favorites))
+        "favorites": json.loads(json_util.dumps(body_Favorites))
     }
